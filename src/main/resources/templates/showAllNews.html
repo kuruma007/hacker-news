@@ -7,7 +7,7 @@
     <title>Show All News</title>
 </head>
 <body>
-<table align="center">
+<table align="center" cellpadding="0" cellspacing="0">
     <tr>
         <td>
             <div>
@@ -19,18 +19,16 @@
                 <a href="#contact">Ask</a>&nbsp;
                 <a href="#about">Show</a>&nbsp;
                 <a href="#news">Jobs</a>&nbsp;
-                <a th:href="@{/newNews}">Submit</a>&nbsp;
+                <a th:href="@{/createNewNews}">Submit</a>&nbsp;
             </div>
         </td>
     </tr>
     <tr th:each="news : ${newsList}" th:if="${news.content} == ''">
-
-        <div>
-            <div class="title">
-                <td><h4><a th:href="${news.url}">[[${news.title}]]</a></h4>
-                <h6 th:text="${news.createdAt}"></h6></td>
-            </div>
-        </div>
+        <td><h5><a th:href="${news.url}">[[${news.title}]]</a></h5>
+            <h6 th:text="${news.createdAt}"></h6>
+            <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
+            <a th:href="@{'/deleteNews/' + ${news.id}}">Delete</a>
+        </td>
     </tr>
 </table>
 </body>

@@ -21,4 +21,13 @@ public class NewsService {
     {
         return newsRepository.findAll();
     }
+
+    public NewsEntity get(Long id){
+        return newsRepository.findById(id).get();
+    }
+
+    public void delete(Long id){
+        newsRepository.deleteById(id);
+    }
+
 }
