@@ -7,26 +7,30 @@
     <title>Show All News</title>
 </head>
 <body>
-<div>
-    <a href="#home"><b>Hacker News</b></a>&nbsp;
-    <a href="#news">Welcome</a>&nbsp;
-    <a th:href="@{/newNews}">New</a>&nbsp;
-    <a href="#about">Past</a>&nbsp;
-    <a href="#news">Comments</a>&nbsp;
-    <a href="#contact">Ask</a>&nbsp;
-    <a href="#about">Show</a>&nbsp;
-    <a href="#news">Jobs</a>&nbsp;
-    <a href="#contact">Submit</a>&nbsp;
-</div>
-<table>
-    <tr th:each="news : ${newsList}" th:if="${news.content} == null">
+<table align="center">
+    <tr>
+        <td>
+            <div>
+                <a href="#home"><b>Hacker News</b></a>&nbsp;
+                <a href="#news">Welcome</a>&nbsp;
+                <a href="#news">New</a>&nbsp;
+                <a href="#about">Past</a>&nbsp;
+                <a href="#news">Comments</a>&nbsp;
+                <a href="#contact">Ask</a>&nbsp;
+                <a href="#about">Show</a>&nbsp;
+                <a href="#news">Jobs</a>&nbsp;
+                <a th:href="@{/newNews}">Submit</a>&nbsp;
+            </div>
+        </td>
+    </tr>
+    <tr th:each="news : ${newsList}" th:if="${news.content} == ''">
+
         <div>
             <div class="title">
-                <h1><a th:href="${news.url}" th:text="${news.title}"></a></h1>
-                <h10 th:text="${news.createdAt}"></h10>
+                <td><h4><a th:href="${news.url}">[[${news.title}]]</a></h4>
+                <h6 th:text="${news.createdAt}"></h6></td>
             </div>
-        </div>news
-        <br>
+        </div>
     </tr>
 </table>
 </body>
