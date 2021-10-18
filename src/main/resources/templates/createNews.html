@@ -6,7 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-    <form th:action="@{/savenews}" th:object="@{newsEntity}">
+    <form th:action="@{/saveNews}" th:object="${newsEntity}" method="post">
         <br>
         <br>
         <table align="center">
@@ -20,7 +20,7 @@
                 <td> OR </td>
             </tr>
             <tr>
-                <td> Text : </td><td><textarea th:field="*{text}" style="width: 469px; height: 198px;"></textarea></td>
+                <td> Text : </td><td><textarea th:field="*{content}" style="width: 469px; height: 198px;"></textarea></td>
             </tr>
             <tr>
                 <td colspan="2"><button type="submit">Submit</button></td>
