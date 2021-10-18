@@ -16,7 +16,7 @@ public class NewsController {
     @Autowired
     private NewsService newsService;
 
-    @GetMapping("/")
+    @GetMapping("/newNews")
     public String newNews(Model model) {
         NewsEntity newsEntity = new NewsEntity();
         model.addAttribute("newsEntity",newsEntity);
@@ -33,8 +33,8 @@ public class NewsController {
 
     @GetMapping("/")
     public String showNews(Model model) {
-        List<NewsEntity> newsEntities = newsService.getNews();
-        model.addAttribute("newsEntities", newsEntities);
+        List<NewsEntity> newsList = newsService.getNews();
+        model.addAttribute("newsList", newsList);
         return "showAllNews";
     }
 }
