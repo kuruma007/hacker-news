@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Show All News</title>
+</head>
+<body>
+<div>
+    <a href="#home"><b>Hacker News</b></a>&nbsp;
+    <a href="#news">Welcome</a>&nbsp;
+    <a th:href="@{/newNews}">New</a>&nbsp;
+    <a href="#about">Past</a>&nbsp;
+    <a href="#news">Comments</a>&nbsp;
+    <a href="#contact">Ask</a>&nbsp;
+    <a href="#about">Show</a>&nbsp;
+    <a href="#news">Jobs</a>&nbsp;
+    <a href="#contact">Submit</a>&nbsp;
+</div>
+<table>
+    <tr th:each="news : ${newsList}" th:if="${news.content} == null">
+        <div>
+            <div class="title">
+                <h1><a th:href="${news.url}" th:text="${news.title}"></a></h1>
+                <h10 th:text="${news.createdAt}"></h10>
+            </div>
+        </div>news
+        <br>
+    </tr>
+</table>
+</body>
+</html>
