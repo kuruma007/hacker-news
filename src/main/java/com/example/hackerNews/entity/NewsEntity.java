@@ -9,6 +9,7 @@ public class NewsEntity {
     @GeneratedValue
     private Long id;
     private String title;
+    private String name;
     private String url;
     @Column(columnDefinition = "text")
     private String content;
@@ -17,8 +18,9 @@ public class NewsEntity {
     public NewsEntity() {
     }
 
-    public NewsEntity(String title, String url, String content, String createdAt) {
+    public NewsEntity(String title, String name, String url, String content, String createdAt) {
         this.title = title;
+        this.name = name;
         this.url = url;
         this.content = content;
         this.createdAt = createdAt;
@@ -38,6 +40,14 @@ public class NewsEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUrl() {
