@@ -49,10 +49,21 @@ public class CommentController {
         Long id = commentService.findCommentById(commentId).getNewsId();
         NewsEntity news = newsService.get(id);
         List<Comment> comments = commentService.findAllCommentsByNewsId(id);
-        Comment comment = commentService.findCommentById(commentId);
+        Comment commentUpdate = commentService.findCommentById(commentId);
         modelAndView.addObject("comments" , comments);
-        modelAndView.addObject("comment", comment);
+        modelAndView.addObject("news", news);
+        modelAndView.addObject("commentUpdate", commentUpdate);
         return modelAndView;
+    }
+
+    @RequestMapping("/commentUpdate/{commentId}")
+    public String updateComment(@PathVariable(value = "commentId") Long commentId,
+                                @ModelAttribute("commentUpdate") Comment comment) {
+        Comment comments = commentService.findCommentById(commentId);
+        comments.setComment(comment.getComment());
+        Long newsId = comments.getNewsId();
+        commentService.saveComment(comments);
+        return "redirect:/newsOpen/"+ newsId;
     }
 
 }
