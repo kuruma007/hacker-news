@@ -15,28 +15,20 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public List<Comment> findAllCommentsByNewsId(Long id){
-        return commentRepository.findAllCommentsByNewsId(id);
+    public List<Comment> findAllCommentsByNewsId(Long newsId){
+        return commentRepository.findAllCommentsByNewsId(newsId);
     }
 
     public void delete(Long id) {
         commentRepository.deleteById(id);
     }
 
-    public Comment get(Long id) {
-        return commentRepository.findById(id).get();
+    public Comment findCommentById(Long id) {
+        return commentRepository.getById(id);
     }
 
-    public Comment findCommentById(Long commentId) {
-        return commentRepository.getById(commentId);
-    }
-
-    public void deleteCommentByNewsId(Long newsId) {
-        commentRepository.deleteById(newsId);
-    }
-
-    public Comment getCommentById(Long commentId) {
-        return commentRepository.getCommentById(commentId);
+    public void deleteCommentById(Long id) {
+        commentRepository.deleteById(id);
     }
 
     public Comment createComment(Comment comment){
