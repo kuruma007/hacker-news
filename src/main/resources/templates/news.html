@@ -12,14 +12,16 @@
         <td th:if="${news.content} != ''"><p th:text="${news.content}"></td>
     </tr>
     <form th:action="@{'/saveComment/'+${news.id}}" th:object="${commentAdd}" method="post">
-            <tr>
-                <td><label> Name : </label></td>
-                <td><input type="text" th:field="${commentAdd.name}" required placeholder="Name Here" aria-required="true"></td>
-            </tr>
-            <tr>
-                <td><label> Email Id : </label></td>
-                <td><input type="email" th:field="${commentAdd.email}" required placeholder="Email Here" aria-required="true"></td>
-            </tr>
+        <tr>
+            <td><label> Name : </label></td>
+            <td><input type="text" th:field="${commentAdd.name}" required placeholder="Name Here"
+                       aria-required="true"></td>
+        </tr>
+        <tr>
+            <td><label> Email Id : </label></td>
+            <td><input type="email" th:field="${commentAdd.email}" required placeholder="Email Here"
+                       aria-required="true"></td>
+        </tr>
         <tr>
             <td align="center" colspan="2"><textarea th:field="${commentAdd.comment}" th:rows="3" th:cols="80"
                                                      required></textarea>
