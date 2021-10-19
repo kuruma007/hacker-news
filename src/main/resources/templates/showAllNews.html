@@ -23,20 +23,26 @@
             </div>
         </td>
     </tr>
-    <tr th:each="news : ${newsList}" th:if="${news.content} == ''">
+    <tr th:each="news : ${newsList}" th:if="${news.content} == null">
         <td><h5><a th:href="${news.url}">[[${news.title}]]</a></h5>
             <h6 th:text="${news.createdAt}"></h6>
             <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
             <a th:href="@{'/deleteNews/' + ${news.id}}">Delete</a>
             <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
-            <a th:if="${news.hide}">
-                <a th:href="@{'/newsHide/'+${news.id}}">Unhide</a>
-            </a>
-            <a th:unless="${news.hide}">
-                <a th:href="@{'/newsHide/'+${news.id}}">Hide</a>
-            </a>
         </td>
     </tr>
+    <tr>
+        <td><a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
+    </tr>
 </table>
+<div align="bottom">
+    <td><form th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}">
+        <input type="hidden" name="sortField" th:value="${sortField}">
+        <input type="hidden" name="sortDir" th:value="${sortDir}">
+        <input type="text" name="keyword" th:value="${keyword}">
+        <button type="submit">Search</button>
+    </form></td>
+</div>
+
 </body>
 </html>
