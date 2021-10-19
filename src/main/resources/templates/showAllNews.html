@@ -29,6 +29,12 @@
             <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
             <a th:href="@{'/deleteNews/' + ${news.id}}">Delete</a>
             <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
+            <a th:if="${news.hide}">
+                <a th:href="@{'/newsHide/'+${news.id}}">Unhide</a>
+            </a>
+            <a th:unless="${news.hide}">
+                <a th:href="@{'/newsHide/'+${news.id}}">Hide</a>
+            </a>
         </td>
     </tr>
 </table>

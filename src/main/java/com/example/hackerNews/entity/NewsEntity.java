@@ -14,6 +14,15 @@ public class NewsEntity {
     @Column(columnDefinition = "text")
     private String content;
     private String createdAt;
+    private Boolean hide;
+
+    public Boolean getHide() {
+        return hide;
+    }
+
+    public void setHide(Boolean hide) {
+        this.hide = hide;
+    }
 
     public NewsEntity() {
     }

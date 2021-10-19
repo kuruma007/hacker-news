@@ -3,12 +3,10 @@ package com.example.hackerNews.controller;
 import com.example.hackerNews.entity.NewsEntity;
 import com.example.hackerNews.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -17,6 +15,19 @@ import java.util.List;
 public class NewsController {
     @Autowired
     private NewsService newsService;
+
+    @GetMapping("/")
+    public String showNewPostForm(Model model) {
+        Page<NewsEntity> page = newsService.getPostsWithPagination(1,10,"id","asc","");
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage",1);
+        model.addAttribute("sortField", "id");
+        model.addAttribute("sortDir", "asc");
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("keyword","");
+        model.addAttribute("newsList",newsList);
+        return "showAllNews";
+    }
 
     @GetMapping("/createNewNews")
     public String newNews(Model model) {
@@ -31,13 +42,6 @@ public class NewsController {
         newsEntity.setName("Ankit Srivastava");
         newsService.saveNews(newsEntity);
         return "redirect:/";
-    }
-
-    @GetMapping("/")
-    public String showNews(Model model) {
-        List<NewsEntity> newsList = newsService.getNews();
-        model.addAttribute("newsList", newsList);
-        return "showAllNews";
     }
 
     @PostMapping("/updateNews")
@@ -60,6 +64,24 @@ public class NewsController {
     public  String deleteNews(@PathVariable(name = "id") Long id){
         newsService.delete(id);
         return "redirect:/";
+    }
+
+    @GetMapping("/page/{pageNo}")
+    public String showPostWithPagination(@PathVariable (value="pageNo") int pageNo,
+                                         @RequestParam("sortField") String sortField,
+                                         @RequestParam("sortDir") String sortDir,
+                                         @RequestParam("keyword") String keyword, Model model) {
+        int pageSize=10;
+        Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage",pageNo);
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        model.addAttribute("newsList",newsList);
+        return "showAllNews";
     }
 
 }

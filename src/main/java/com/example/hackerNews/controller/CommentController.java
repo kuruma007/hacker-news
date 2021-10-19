@@ -5,6 +5,7 @@ import com.example.hackerNews.entity.NewsEntity;
 import com.example.hackerNews.service.CommentService;
 import com.example.hackerNews.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,6 @@ public class CommentController {
         commentService.deleteCommentById(commentId);
         return "redirect:/newsOpen/"+ id;
     }
+
 
 }
