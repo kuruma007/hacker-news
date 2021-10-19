@@ -27,9 +27,4 @@ public class CommentService {
     public void deleteCommentById(Long id) {
         commentRepository.deleteById(id);
     }
-
-    public Comment createComment(Comment comment){
-        return commentRepository.save(comment);
-    }
-
 }
