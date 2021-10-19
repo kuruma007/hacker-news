@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -40,6 +41,18 @@ public class CommentController {
         model.addAttribute("commentAdd", commentAdd);
         model.addAttribute("comments", comments);
         return "news";
+    }
+
+    @RequestMapping("/updateComment/{commentId}")
+    public ModelAndView openPostToUpdateComment(@PathVariable(value = "commentId") Long commentId, Model model) {
+        ModelAndView modelAndView=new ModelAndView("updateComment");
+        Long id = commentService.findCommentById(commentId).getNewsId();
+        NewsEntity news = newsService.get(id);
+        List<Comment> comments = commentService.findAllCommentsByNewsId(id);
+        Comment comment = commentService.findCommentById(commentId);
+        modelAndView.addObject("comments" , comments);
+        modelAndView.addObject("comment", comment);
+        return modelAndView;
     }
 
 }

@@ -27,6 +27,24 @@
             </td>
         </tr>
     </form>
+    <tr th:each="comment : ${comments}">
+        <td th:text="${comment.email}"></td>
+        <td th:text="${comment.name}"></td>
+        <td th:text="${comment.comment}"></td>
+            <td>
+                <form th:action="@{/updateComment/{commentId}(commentId=${comment.id})}"
+                      method="post">
+                    <button>Update</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/deleteComment/{commentId}(commentId=${comment.id})}"
+                      method="post">
+                    <button>Delete</button>
+                </form>
+            </td>
+    </tr>
+
 </table>
 </body>
 </html>
