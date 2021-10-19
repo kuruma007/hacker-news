@@ -19,9 +19,6 @@ public class CommentService {
         return commentRepository.findAllCommentsByNewsId(newsId);
     }
 
-    public void delete(Long id) {
-        commentRepository.deleteById(id);
-    }
 
     public Comment findCommentById(Long id) {
         return commentRepository.getById(id);
