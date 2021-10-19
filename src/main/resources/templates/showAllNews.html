@@ -28,6 +28,7 @@
             <h6 th:text="${news.createdAt}"></h6>
             <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
             <a th:href="@{'/deleteNews/' + ${news.id}}">Delete</a>
+            <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
         </td>
     </tr>
 </table>
