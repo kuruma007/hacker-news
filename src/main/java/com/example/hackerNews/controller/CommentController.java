@@ -7,7 +7,10 @@ import com.example.hackerNews.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -17,12 +20,8 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
-
     @Autowired
     private NewsService newsService;
-
-    @Autowired
-    private NewsController newsController;
 
     @RequestMapping("/saveComment/{id}")
     public String saveComment(@PathVariable Long id,
@@ -50,17 +49,21 @@ public class CommentController {
         Long id = commentService.findCommentById(commentId).getNewsId();
         NewsEntity news = newsService.get(id);
         List<Comment> comments = commentService.findAllCommentsByNewsId(id);
-        Comment comment = commentService.findCommentById(commentId);
+        Comment commentUpdate = commentService.findCommentById(commentId);
         modelAndView.addObject("comments" , comments);
-        modelAndView.addObject("comment", comment);
+        modelAndView.addObject("news", news);
+        modelAndView.addObject("commentUpdate", commentUpdate);
         return modelAndView;
     }
 
-    @PostMapping("/deleteComment/{commentId}")
-    public String deleteComment(@PathVariable(value = "commentId") Long commentId) {
-        Long id = commentService.findCommentById(commentId).getNewsId();
-        commentService.deleteCommentById(commentId);
-        return "redirect:/newsOpen/"+ id;
+    @RequestMapping("/commentUpdate/{commentId}")
+    public String updateComment(@PathVariable(value = "commentId") Long commentId,
+                                @ModelAttribute("commentUpdate") Comment comment) {
+        Comment comments = commentService.findCommentById(commentId);
+        comments.setComment(comment.getComment());
+        Long newsId = comments.getNewsId();
+        commentService.saveComment(comments);
+        return "redirect:/newsOpen/"+ newsId;
     }
 
 }
