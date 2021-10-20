@@ -26,10 +26,12 @@
     <tr>
         <td>
             <div>
-                <a href="#home"><b>Hacker News</b></a>&nbsp;
+                <a th:href="@{/}"><b>Hacker News</b></a>&nbsp;
                 <a th:href="@{/welcome}">Welcome</a>&nbsp;
-                <a th:href="@{'/newest/'}">New</a>&nbsp;
-                <a href="#about">Past</a>&nbsp;
+                <a th:href="@{'/newNews/' + ${currentPage}+ '?sortField=id&sortDirection=desc' + '&keyword='
+                    + ${keyword}}">New</a>&nbsp;
+                <a th:href="@{'/pastNews/' + ${currentPage}+ '?sortField=id&sortDirection=asc' + '&keyword='
+                    + ${keyword}}">Past</a>&nbsp;
                 <a href="#news">Comments</a>&nbsp;
                 <a href="#contact">Ask</a>&nbsp;
                 <a href="#about">Show</a>&nbsp;
