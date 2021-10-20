@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.thymeleaf.org"
-      xmlns="http://www.w3.org/1999/html">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Show All News</title>
 </head>
 <body>
+
+<div th:unless="${ADMIN} OR ${sessionUser} != null">
+    <form th:action="@{/login}">
+        <button name="Login" type="submit">Login</button>
+    </form>
+</div>
+<div align="right">
+    <th:block th:if="${admin} OR ${sessionUser} != null">
+        <form th:action="@{/logout}">
+            <button name="Login" sec:authorize="isAuthenticated()" type="submit">Logout</button>
+        </form>
+    </th:block>
+</div>
+
+
 <table align="center" cellpadding="0" cellspacing="0">
     <tr>
         <td>
             <div>
                 <a href="#home"><b>Hacker News</b></a>&nbsp;
-                <a href="#news">Welcome</a>&nbsp;
+                <a th:href="@{/welcome}">Welcome</a>&nbsp;
                 <a th:href="@{'/newest/'}">New</a>&nbsp;
                 <a href="#about">Past</a>&nbsp;
                 <a href="#news">Comments</a>&nbsp;
