@@ -2,8 +2,10 @@ package com.example.hackerNews.controller;
 
 import com.example.hackerNews.entity.Comment;
 import com.example.hackerNews.entity.NewsEntity;
+import com.example.hackerNews.entity.User;
 import com.example.hackerNews.service.CommentService;
 import com.example.hackerNews.service.NewsService;
+import com.example.hackerNews.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -25,12 +27,17 @@ public class CommentController {
     @Autowired
     private NewsController newsController;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping("/saveComment/{id}")
     public String saveComment(@PathVariable Long id,
                               @ModelAttribute("commentAdd") Comment comment) {
-        System.out.println("hii");
         comment.setNewsId(id);
         comment.setCreatedAt(new java.util.Date().toString());
+        User user = userService.getCurrentUser();
+        comment.setName(user.getName());
+        comment.setEmail(user.getEmail());
         commentService.saveComment(comment);
         return "redirect:/newsOpen/"+ id;
     }
@@ -53,9 +60,21 @@ public class CommentController {
         List<Comment> comments = commentService.findAllCommentsByNewsId(id);
         Comment comment = commentService.findCommentById(commentId);
         modelAndView.addObject("comments" , comments);
-        modelAndView.addObject("comment", comment);
+        modelAndView.addObject("commentUpdate", comment);
+        modelAndView.addObject("news",news);
         return modelAndView;
     }
+
+    @RequestMapping("/commentUpdate/{commentId}")
+    public String commentUpdate(@PathVariable(value = "commentId") Long commentId,
+                                @ModelAttribute("commentUpdate") Comment commentUpdate) {
+        Comment comment = commentService.findCommentById(commentId);
+        comment.setComment(commentUpdate.getComment());
+        Long newsId = comment.getNewsId();
+        commentService.saveComment(comment);
+        return "redirect:/newsOpen/"+ newsId;
+    }
+
 
     @PostMapping("/deleteComment/{commentId}")
     public String deleteComment(@PathVariable(value = "commentId") Long commentId) {
@@ -63,6 +82,4 @@ public class CommentController {
         commentService.deleteCommentById(commentId);
         return "redirect:/newsOpen/"+ id;
     }
-
-
 }

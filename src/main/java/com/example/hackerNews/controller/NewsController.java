@@ -1,6 +1,7 @@
 package com.example.hackerNews.controller;
 
 import com.example.hackerNews.entity.NewsEntity;
+import com.example.hackerNews.entity.User;
 import com.example.hackerNews.service.NewsService;
 import com.example.hackerNews.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,8 @@ public class NewsController {
     @PostMapping("/saveNews")
     public String saveNews(@ModelAttribute("newsEntity") NewsEntity newsEntity) {
         newsEntity.setCreatedAt(new java.util.Date().toString());
-        newsEntity.setName("Ankit Srivastava");
+        User user = userService.getCurrentUser();
+        newsEntity.setName(user.getName());
         newsService.saveNews(newsEntity);
         return "redirect:/";
     }
@@ -69,7 +71,8 @@ public class NewsController {
     @PostMapping("/updateNews")
     public String updateNews(@ModelAttribute("newsEntity") NewsEntity newsEntity){
         newsEntity.setCreatedAt(new java.util.Date().toString());
-        newsEntity.setName("Ankit Srivastava");
+        User user = userService.getCurrentUser();
+        newsEntity.setName(user.getName());
         newsService.saveNews(newsEntity);
         return "redirect:/";
     }
