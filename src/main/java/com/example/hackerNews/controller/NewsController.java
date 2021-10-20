@@ -2,8 +2,12 @@ package com.example.hackerNews.controller;
 
 import com.example.hackerNews.entity.NewsEntity;
 import com.example.hackerNews.service.NewsService;
+import com.example.hackerNews.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,15 @@ import java.util.List;
 public class NewsController {
     @Autowired
     private NewsService newsService;
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    public void modelAttribute(Model model){
+        model.addAttribute("sessionUser", userService.findUserByEmail(SecurityContextHolder.getContext()
+                .getAuthentication().getName()));
+        model.addAttribute("admin",hasRole("ROLE_ADMIN"));
+    }
 
     @GetMapping("/")
     public String showNewPostForm(Model model) {
@@ -27,6 +40,15 @@ public class NewsController {
         model.addAttribute("keyword","");
         model.addAttribute("newsList",newsList);
         return "showAllNews";
+    }
+
+    @GetMapping("/login")
+    public String posts() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "login";
+        }
+        return "redirect:/";
     }
 
     @GetMapping("/createNewNews")
@@ -84,5 +106,13 @@ public class NewsController {
         return "showAllNews";
     }
 
+    @GetMapping("/welcome")
+    public String welcomePage() {
+        return "welcome.html";
+    }
 
+    public static boolean hasRole(String roleName) {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
+    }
 }
