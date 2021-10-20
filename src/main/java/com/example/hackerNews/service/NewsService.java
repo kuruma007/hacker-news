@@ -34,7 +34,8 @@ public class NewsService {
         newsRepository.deleteById(id);
     }
 
-    public Page<NewsEntity> getPostsWithPagination(int pageNo, int pageSize, String sortField, String sortDir, String keyword){
+    public Page<NewsEntity> getPostsWithPagination(int pageNo, int pageSize, String sortField, String sortDir,
+                                                   String keyword){
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
                 Sort.by(sortField).descending();
         Pageable pagable = PageRequest.of(pageNo-1,pageSize,sort);

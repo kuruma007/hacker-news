@@ -4,6 +4,7 @@ import com.example.hackerNews.entity.NewsEntity;
 import com.example.hackerNews.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -68,8 +69,8 @@ public class NewsController {
 
     @GetMapping("/page/{pageNo}")
     public String showPostWithPagination(@PathVariable (value="pageNo") int pageNo,
-                                         @RequestParam("sortField") String sortField,
-                                         @RequestParam("sortDir") String sortDir,
+                                         @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
+                                         @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
                                          @RequestParam("keyword") String keyword, Model model) {
         int pageSize=10;
         Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
@@ -84,5 +85,69 @@ public class NewsController {
         return "showAllNews";
     }
 
+    @RequestMapping("/newNews")
+    public String viewNewNews(@Param("keyword") String keyword, Model model) {
 
+        Page<NewsEntity> page = newsService.getPostsWithPagination(1,10,"id","desc",
+                "");
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage",1);
+        model.addAttribute("sortField", "id");
+        model.addAttribute("sortDir", "desc");
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("keyword","");
+        model.addAttribute("newsList",newsList);
+
+        return "newNews";
+    }
+
+    @GetMapping("/newNews/{pageNo}")
+    public String viewPostWithPagination(@PathVariable (value="pageNo") int pageNo,
+                                         @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
+                                         @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir,
+                                         @RequestParam("keyword") String keyword, Model model) {
+        int pageSize=10;
+        Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage",pageNo);
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("newsList",newsList);
+        return "newNews";
+    }
+
+    @RequestMapping("/pastNews")
+    public String viewPastNews(@Param("keyword") String keyword, Model model) {
+
+        Page<NewsEntity> page = newsService.getPostsWithPagination(1,10,"id","asc",
+                "");
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage",1);
+        model.addAttribute("sortField", "id");
+        model.addAttribute("sortDir", "asc");
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("keyword","");
+        model.addAttribute("newsList",newsList);
+
+        return "pastNews";
+    }
+
+    @GetMapping("/pastNews/{pageNo}")
+    public String displayPostWithPagination(@PathVariable (value="pageNo") int pageNo,
+                                         @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
+                                         @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
+                                         @RequestParam("keyword") String keyword, Model model) {
+        int pageSize=10;
+        Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage",pageNo);
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("newsList",newsList);
+        return "pastNews";
+    }
 }
