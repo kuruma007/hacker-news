@@ -9,7 +9,7 @@
 <form th:action="@{/saveNews}" th:object="${newsEntity}" method="POST">
     <br>
     <br>
-    <table align="center">
+    <table align="center" width=50%; height=60px; style="border:1px black solid;">
         <tr>
             <td> Title :</td>
             <td><input type="text" th:field="*{title}" required/></td>

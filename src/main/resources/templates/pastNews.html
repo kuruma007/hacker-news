@@ -7,12 +7,14 @@
     <title>Show All News</title>
 </head>
 <body>
-<table align="center" cellpadding="0" cellspacing="0">
+<table align="center" width=50%; height=60px; style="border:1px black solid;">
     <tr>
         <td>
             <div>
                 <a th:href="@{/}"><b>Hacker News</b></a>&nbsp;
-                <a href="#news">Welcome</a>&nbsp;
+                <th:block th:if="${admin} OR ${sessionUser} != null">
+                    <a th:href="@{/welcome}">Welcome</a>&nbsp;
+                </th:block>
                 <a th:href="@{'/newNews/' + ${currentPage}+ '?sortField=id&sortDirection=desc' + '&keyword='
                     + ${keyword}}">New</a>&nbsp;
                 <a th:href="@{'/pastNews/' + ${currentPage}+ '?sortField=id&sortDirection=asc' + '&keyword='

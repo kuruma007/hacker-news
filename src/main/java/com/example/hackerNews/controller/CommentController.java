@@ -41,6 +41,7 @@ public class CommentController {
         commentService.saveComment(comment);
         return "redirect:/newsOpen/"+ id;
     }
+
     @RequestMapping("/newsOpen/{id}")
     public String openNews(@PathVariable Long id, Model model) {
         NewsEntity news = newsService.get(id);
@@ -74,7 +75,6 @@ public class CommentController {
         commentService.saveComment(comment);
         return "redirect:/newsOpen/"+ newsId;
     }
-
 
     @PostMapping("/deleteComment/{commentId}")
     public String deleteComment(@PathVariable(value = "commentId") Long commentId) {
