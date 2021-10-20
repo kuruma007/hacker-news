@@ -11,10 +11,12 @@
     <tr>
         <td>
             <div>
-                <a href="#home"><b>Hacker News</b></a>&nbsp;
+                <a th:href="@{/}"><b>Hacker News</b></a>&nbsp;
                 <a href="#news">Welcome</a>&nbsp;
-                <a th:href="@{/newNews}">New</a>&nbsp;
-                <a th:href="@{/pastNews}">Past</a>&nbsp;
+                <a th:href="@{'/newNews/' + ${currentPage}+ '?sortField=id&sortDirection=desc' + '&keyword='
+                    + ${keyword}}">New</a>&nbsp;
+                <a th:href="@{'/pastNews/' + ${currentPage}+ '?sortField=id&sortDirection=asc' + '&keyword='
+                    + ${keyword}}">Past</a>&nbsp;
                 <a href="#news">Comments</a>&nbsp;
                 <a href="#contact">Ask</a>&nbsp;
                 <a href="#about">Show</a>&nbsp;
@@ -32,7 +34,7 @@
         </td>
     </tr>
     <tr>
-        <td><a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField='
+        <td><a th:if="${currentPage < totalPages}" th:href="@{'/newNews/' + ${currentPage + 1}+ '?sortField='
          + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
     </tr>
 </table>

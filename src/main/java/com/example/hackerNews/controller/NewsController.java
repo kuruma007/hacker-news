@@ -111,6 +111,41 @@ public class NewsController {
         return "welcome.html";
     }
 
+    @GetMapping("/pastNews/{pageNo}")
+    public String displayPostWithPagination(@PathVariable (value="pageNo") int pageNo,
+                                            @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
+                                            @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
+                                            @RequestParam("keyword") String keyword, Model model) {
+        int pageSize = 10;
+        Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo, pageSize, sortField, sortDir, keyword);
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("newsList", newsList);
+        return "pastNews";
+    }
+
+    @GetMapping("/newNews/{pageNo}")
+    public String viewPostWithPagination(@PathVariable (value="pageNo") int pageNo,
+                                         @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
+                                         @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir,
+                                         @RequestParam("keyword") String keyword, Model model) {
+        int pageSize=10;
+        Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
+        List<NewsEntity> newsList = page.getContent();
+        model.addAttribute("currentPage",pageNo);
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("newsList",newsList);
+        return "newNews";
+    }
+
+
     public static boolean hasRole(String roleName) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
