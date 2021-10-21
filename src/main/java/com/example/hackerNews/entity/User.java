@@ -1,6 +1,7 @@
 package com.example.hackerNews.entity;
 
 import javax.persistence.*;
+import java.text.CollationElementIterator;
 import java.util.Collection;
 
 @Entity
