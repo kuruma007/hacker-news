@@ -1,9 +1,12 @@
 package com.example.hackerNews.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Table(name = "News")
+@Table(name = "news")
 public class NewsEntity {
     @Id
     @GeneratedValue
@@ -15,6 +18,14 @@ public class NewsEntity {
     private String content;
     private String createdAt;
     private Boolean hide;
+    private Boolean likeByUser;
+    private Integer pointsPerPost;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name="user_like",
+            joinColumns = @JoinColumn(name = "news_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> userLikes = new ArrayList<>();
 
     public Boolean getHide() {
         return hide;
@@ -27,12 +38,17 @@ public class NewsEntity {
     public NewsEntity() {
     }
 
-    public NewsEntity(String title, String name, String url, String content, String createdAt) {
+    public NewsEntity(Long id, String title, String name, String url, String content, String createdAt, Boolean hide, Boolean likeByUser, Integer pointsPerPost, List<User> userLikes) {
+        this.id = id;
         this.title = title;
         this.name = name;
         this.url = url;
         this.content = content;
         this.createdAt = createdAt;
+        this.hide = hide;
+        this.likeByUser = likeByUser;
+        this.pointsPerPost = pointsPerPost;
+        this.userLikes = userLikes;
     }
 
     public Long getId() {
@@ -81,5 +97,29 @@ public class NewsEntity {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Boolean getLikeByUser() {
+        return likeByUser;
+    }
+
+    public void setLikeByUser(Boolean likeByUser) {
+        this.likeByUser = likeByUser;
+    }
+
+    public List<User> getUserLikes() {
+        return userLikes;
+    }
+
+    public void setUserLikes(List<User> userLikes) {
+        this.userLikes = userLikes;
+    }
+
+    public Integer getPointsPerPost() {
+        return pointsPerPost;
+    }
+
+    public void setPointsPerPost(Integer pointsPerPost) {
+        this.pointsPerPost = pointsPerPost;
     }
 }
