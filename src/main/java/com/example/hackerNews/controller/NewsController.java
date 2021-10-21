@@ -175,6 +175,24 @@ public class NewsController {
         return "newNews";
     }
 
+    @RequestMapping("/addLike/{newsId}")
+    public String addLikeOnNews(@PathVariable(value = "newsId") Long newsId) {
+        NewsEntity newsEntity = newsService.get(newsId);
+        List<User> userLikes = newsEntity.getUserLikes();
+        userLikes.add(userService.getCurrentUser());
+        newsService.saveNews(newsEntity);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/removeLike/{newsId}")
+    public String removeLikeOnNews(@PathVariable(value = "newsId") Long newsId) {
+        NewsEntity newsEntity = newsService.get(newsId);
+        List<User> userLikes = newsEntity.getUserLikes();
+        userLikes.remove(userService.getCurrentUser());
+        newsService.saveNews(newsEntity);
+        return "redirect:/";
+    }
+
     public static boolean hasRole(String roleName) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
