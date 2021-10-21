@@ -7,7 +7,6 @@
     <title>Show All News</title>
 </head>
 <body>
-
 <div th:unless="${ADMIN} OR ${sessionUser} != null">
     <form th:action="@{/login}">
         <button name="Login" type="submit">Login</button>
@@ -20,11 +19,9 @@
         </form>
     </th:block>
 </div>
-
-
 <table align="center" width=50%; height=60px; style="border:1px black solid;">
     <tr>
-        <td>
+        <td colspan="5">
             <div>
                 <a th:href="@{/}"><b>Hacker News</b></a>&nbsp;
                 <th:block th:if="${admin} OR ${sessionUser} != null">
@@ -43,6 +40,18 @@
         </td>
     </tr>
     <tr th:each="news : ${newsList}" th:if="${news.content} == null">
+        <td th:if="!${news.likeByUser}" style="width:10%">
+            <form th:action="@{/addLike/{newsId}(newsId=${news.id})}" method="post">
+                <button>Like</button>
+                [[${news.pointsPerPost}]]
+            </form>
+        </td>
+        <td th:if="${news.likeByUser}">
+            <form th:action="@{/removeLike/{newsId}(newsId=${news.id})}" method="post">
+                <button>Unlike</button>
+                [[${news.pointsPerPost}]]
+            </form>
+        </td>
         <td><h5><a th:href="${news.url}">[[${news.title}]]</a></h5>
             <h6 th:text="${news.createdAt}"></h6>
             <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
@@ -54,17 +63,16 @@
         <td><a th:if="${currentPage < totalPages}"
                th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
     </tr>
+    <tr>
+        <td colspan="4" align="center">
+            <form th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}">
+                <input type="hidden" name="sortField" th:value="${sortField}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                <input type="text" name="keyword" th:value="${keyword}">
+                <button type="submit">Search</button>
+            </form>
+        </td>
+    </tr>
 </table>
-<div align="bottom">
-    <td>
-        <form th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}">
-            <input type="hidden" name="sortField" th:value="${sortField}">
-            <input type="hidden" name="sortDir" th:value="${sortDir}">
-            <input type="text" name="keyword" th:value="${keyword}">
-            <button type="submit">Search</button>
-        </form>
-    </td>
-</div>
-
 </body>
 </html>
