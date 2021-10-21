@@ -13,6 +13,17 @@ public class User {
     private String name;
     private String email;
     private String password;
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles", joinColumns = @JoinColumn (name = "user_id", referencedColumnName = "id"),

@@ -4,6 +4,7 @@ import com.example.hackerNews.dto.UserRegistrationDto;
 import com.example.hackerNews.entity.Role;
 import com.example.hackerNews.entity.User;
 import com.example.hackerNews.repository.UserRepository;
+import com.example.hackerNews.userDefinedException.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -75,5 +76,29 @@ public class UserService implements UserDetailsService {
             user = userRepository.findByEmail(username);
         }
         return user;
+    }
+
+    public void updateResetPasswordToken(String token, String email) throws UserNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if(user != null){
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+        }else{
+            throw new UserNotFoundException("No user with this email" + email);
+        }
+    }
+
+    public User getByResetPasswordToken(String resetPasswordToken){
+        return userRepository.findByResetPasswordToken(resetPasswordToken);
+    }
+
+    public void updatePassword(User user, String newPassword){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = bCryptPasswordEncoder.encode(newPassword);
+
+        user.setPassword(encodedPassword);
+        user.setResetPasswordToken(null);
+
+        userRepository.save(user);
     }
 }
