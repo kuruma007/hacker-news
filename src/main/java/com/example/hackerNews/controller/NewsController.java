@@ -34,6 +34,19 @@ public class NewsController {
     public String showNewPostForm(Model model) {
         Page<NewsEntity> page = newsService.getPostsWithPagination(1,10,"id","asc","");
         List<NewsEntity> newsList = page.getContent();
+        if(userService.getCurrentUser() != null) {
+            for (NewsEntity news : newsList) {
+                if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                    news.setLikeByUser(true);
+                }
+                else {
+                    news.setLikeByUser(false);
+                }
+            }
+        }
+        for (NewsEntity news : newsList) {
+            news.setPointsPerPost(news.getUserLikes().size());
+        }
         model.addAttribute("currentPage",1);
         model.addAttribute("sortField", "id");
         model.addAttribute("sortDir", "asc");
@@ -64,6 +77,7 @@ public class NewsController {
         newsEntity.setCreatedAt(new java.util.Date().toString());
         User user = userService.getCurrentUser();
         newsEntity.setName(user.getName());
+        newsEntity.setLikeByUser(false);
         newsService.saveNews(newsEntity);
         return "redirect:/";
     }
@@ -99,6 +113,19 @@ public class NewsController {
         int pageSize=10;
         Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
         List<NewsEntity> newsList = page.getContent();
+        if(userService.getCurrentUser() != null) {
+            for (NewsEntity news : newsList) {
+                if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                    news.setLikeByUser(true);
+                }
+                else {
+                    news.setLikeByUser(false);
+                }
+            }
+        }
+        for (NewsEntity news : newsList) {
+            news.setPointsPerPost(news.getUserLikes().size());
+        }
         model.addAttribute("currentPage",pageNo);
         model.addAttribute("totalPages",page.getTotalPages());
         model.addAttribute("sortField", sortField);
@@ -147,7 +174,6 @@ public class NewsController {
         model.addAttribute("newsList",newsList);
         return "newNews";
     }
-
 
     public static boolean hasRole(String roleName) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
