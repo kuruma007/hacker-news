@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Show All News</title>
+</head>
+<body>
+<table align="center" width=50%; height=60px; style="border:1px black solid;">
+    <tr>
+        <td>
+            <div>
+                <a th:href="@{/}"><b>Hacker News</b></a>&nbsp;
+                <th:block th:if="${admin} OR ${sessionUser} != null">
+                    <a th:href="@{/welcome}">Welcome</a>&nbsp;
+                </th:block>
+                <a th:href="@{'/newNews/' + ${currentPage}+ '?sortField=id&sortDirection=desc' + '&keyword='
+                    + ${keyword}}">New</a>&nbsp;
+                <a th:href="@{'/pastNews/' + ${currentPage}+ '?sortField=id&sortDirection=asc' + '&keyword='
+                    + ${keyword}}">Past</a>&nbsp;
+                <a href="#news">Comments</a>&nbsp;
+                <a href="#contact">Ask</a>&nbsp;
+                <a href="#about">Show</a>&nbsp;
+                <a href="#news">Jobs</a>&nbsp;
+                <a th:href="@{/createNewNews}">Submit</a>&nbsp;
+            </div>
+        </td>
+    </tr>
+    <tr th:each="news : ${newsList}">
+        <td><h5><a th:href="${news.url}">[[${news.title}]]</a></h5>
+            <h6 th:text="${news.createdAt}"></h6>
+            <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
+            <a th:href="@{'/deleteNews/' + ${news.id}}">Delete</a>
+            <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField='
+                + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
+    </tr>
+</table>
+<div align="bottom">
+    <td><form th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir}
+            + '&keyword=' + ${keyword}">
+        <input type="hidden" name="sortField" th:value="${sortField}">
+        <input type="hidden" name="sortDir" th:value="${sortDir}">
+        <input type="text" name="keyword" th:value="${keyword}">
+        <button type="submit">Search</button>
+    </form></td>
+</div>
+
+</body>
+</html>

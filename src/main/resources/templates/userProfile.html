@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table align="center">
+    <tr>
+        <td><label> User Name : </label></td><td>[[${user.name}]]</td>
+    </tr>
+    <tr>
+        <td><label> Email Id : </label></td><td>[[${user.email}]]</td>
+    </tr>
+    <tr>
+        <td colspan="2"><h3> Karma :</h3></td>
+    </tr>
+    <tr>
+        <td><label> News Liked : </label></td><td>[[${newsLike}]]</td>
+    </tr>
+    <tr>
+        <td><label> News Posted : </label></td><td>[[${newsPosted}]]</td>
+    </tr>
+    <tr>
+        <td><label> Total Comments : </label></td><td>[[${comments}]]</td>
+    </tr>
+    <tr>
+        <td><a th:href="@{/hiddenNews}">Hidden News</a></td>
+    </tr>
+    <tr>
+        <td><a th:href="@{/favoriteNews}">Favorite News</a></td>
+    </tr>
+    <tr>
+        <td><a th:href="@{/userNews}">Personal News</a></td>
+    </tr>
+</table>
+</body>
+</html>

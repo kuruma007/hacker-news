@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create</title>
+</head>
+<body>
+<form th:action="@{/updateNews}" th:object="${newsEntity}" method="POST">
+    <br>
+    <br>
+    <table align="center">
+        <tr>
+            <td><input type="hidden" th:field="*{id}"></td>
+        </tr>
+        <tr>
+            <td> Title : </td><td><input type="text" th:field="*{title}" required/></td>
+        </tr>
+        <tr>
+            <td> Url : </td><td><input type="text" th:field="*{url}" required/></td>
+        </tr>
+        <tr>
+            <td> OR </td>
+        </tr>
+        <tr>
+            <td> Text : </td><td><textarea th:field="*{content}" style="width: 469px; height: 198px;"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">Submit</button></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

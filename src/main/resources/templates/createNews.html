@@ -3,29 +3,53 @@
       xsi:schemaLocation="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Create</title>
 </head>
 <body>
-    <form th:action="@{/savenews}" th:object="@{newsEntity}">
-        <br>
-        <br>
-        <table align="center">
-            <tr>
-                <td> Title : </td><td><input type="text" th:field="*{title}" required/></td>
-            </tr>
-            <tr>
-                <td> Url : </td><td><input type="text" th:field="*{url}" required/></td>
-            </tr>
-            <tr>
-                <td> OR </td>
-            </tr>
-            <tr>
-                <td> Text : </td><td><textarea th:field="*{text}" style="width: 469px; height: 198px;"></textarea></td>
-            </tr>
-            <tr>
-                <td colspan="2"><button type="submit">Submit</button></td>
-            </tr>
-        </table>
-    </form>
+<form th:action="@{/saveNews}" th:object="${newsEntity}" method="POST">
+    <br>
+    <br>
+    <table align="center" width=50%; height=60px; style="border:1px black solid;">
+        <tr>
+            <td> Title :</td>
+            <td><input type="text" th:field="*{title}" required/></td>
+        </tr>
+        <tr>
+            <td> Url :</td>
+            <td><input type="text" th:id="url" th:field="*{url}"/></td>
+        </tr>
+        <tr>
+            <td> OR</td>
+        </tr>
+        <tr>
+            <td> Text :</td>
+            <td><textarea th:id="content" th:field="*{content}" style="width: 469px; height: 198px;">
+
+            </textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit">Submit</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<script th:inline="javascript">
+    var urlInput = document.getElementById('url');
+    var contentInput = document.getElementById('content');
+
+    var checker = setInterval(function() {
+        if(contentInput.value !== '') {
+            urlInput.disabled = true;
+        } else {
+            urlInput.disabled = false;
+        }
+        if(urlInput.value !== '') {
+            contentInput.disabled = true;
+        } else {
+            contentInput.disabled = false;
+        }
+    }, 30);
+</script>
 </body>
 </html>
