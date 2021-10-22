@@ -1,39 +1,104 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.thymeleaf.org">
+      xsi:schemaLocation="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Create</title>
+    <style th:inline="css">
+    *{
+    margin:0;
+    padding:0;
+    display:border-box;
+    }
+
+    .main{
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+    }
+
+    .header{
+         margin-top:30px;
+         display:flex;
+         width:90%;
+         align-self:center;
+         justify-content:space-between;
+         background-color:rgb(255,69,0);
+    }
+
+    .insideheader > a{
+        text-decoration:none;
+        color:black;
+    }
+
+    .table{
+          width:90%;
+          align-self:center;
+          background-color: rgb(240,240,240);
+          border-bottom:1px solid orange;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+    #userProfile{
+        margin-left: 350px;
+    }
+
+    form{
+        width:90%;
+        align-self:center;
+        background-color: rgb(240,240,240);
+    }
+
+    body {
+        min-height:100vh;
+    }
+
+    .btn-submit{
+        margin-left: 5px;
+    }
+
+    </style>
 </head>
 <body>
-<form th:action="@{/saveNews}" th:object="${newsEntity}" method="POST">
+<div class="main">
+    <div class="header">
+        <div class="insideheader">
+            <a th:href="@{/createNewNews}">Submit</a>&nbsp;
+        </div>
+    </div>
     <br>
-    <br>
-    <table align="center" width=50%; height=60px; style="border:1px black solid;">
-        <tr>
-            <td> Title :</td>
-            <td><input type="text" th:field="*{title}" required/></td>
-        </tr>
-        <tr>
-            <td> Url :</td>
-            <td><input type="text" th:id="url" th:field="*{url}"/></td>
-        </tr>
-        <tr>
-            <td> OR</td>
-        </tr>
-        <tr>
-            <td> Text :</td>
-            <td><textarea th:id="content" th:field="*{content}" style="width: 469px; height: 198px;">
+    <form th:action="@{/saveNews}" th:object="${newsEntity}" method="POST">
+        <br>
+        <br>
+        <table class="table">
+            <tr>
+                <td> Title :</td>
+                <td><input type="text" th:field="*{title}" required/></td>
+            </tr>
+            <tr>
+                <td> Url :</td>
+                <td><input type="text" th:id="url" th:field="*{url}"/></td>
+            </tr>
+            <tr>
+                <td> OR</td>
+            </tr>
+            <tr>
+                <td> Text :</td>
+                <td><textarea th:id="content" th:field="*{content}" style="width: 469px; height: 198px;">
 
             </textarea></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <button type="submit">Submit</button>
-            </td>
-        </tr>
-    </table>
-</form>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">Submit</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
 <script th:inline="javascript">
     var urlInput = document.getElementById('url');
     var contentInput = document.getElementById('content');
@@ -50,6 +115,7 @@
             contentInput.disabled = false;
         }
     }, 30);
+
 </script>
 </body>
 </html>

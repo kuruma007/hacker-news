@@ -36,9 +36,10 @@ public class NewsController {
 
     @GetMapping("/")
     public String showNewPostForm(Model model) {
-        Page<NewsEntity> page = newsService.getPostsWithPagination(1,10,"id","asc","");
+        Page<NewsEntity> page = newsService.getPostsWithPagination(1,20,"id","asc","");
         List<NewsEntity> newsList = page.getContent();
         User user = userService.getCurrentUser();
+        int value = 1;
         if(userService.getCurrentUser() != null) {
             for (NewsEntity news : newsList) {
                 if(news.getUserLikes().contains(userService.getCurrentUser())) {
@@ -71,6 +72,7 @@ public class NewsController {
         model.addAttribute("totalPages",page.getTotalPages());
         model.addAttribute("keyword","");
         model.addAttribute("newsList",newsList);
+        model.addAttribute("value", value);
         return "showAllNews";
     }
 
@@ -86,7 +88,10 @@ public class NewsController {
     @GetMapping("/createNewNews")
     public String newNews(Model model) {
         NewsEntity newsEntity = new NewsEntity();
+        User user = userService.getCurrentUser();
+        model.addAttribute("user", user);
         model.addAttribute("newsEntity",newsEntity);
+
         return "createNews";
     }
 
@@ -130,9 +135,11 @@ public class NewsController {
                                          @RequestParam("sortField") String sortField,
                                          @RequestParam("sortDir") String sortDir,
                                          @RequestParam("keyword") String keyword, Model model) {
-        int pageSize=10;
+        int pageSize=20;
         Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
         List<NewsEntity> newsList = page.getContent();
+        int value = 1;
+        User user = userService.getCurrentUser();
         if(userService.getCurrentUser() != null) {
             for (NewsEntity news : newsList) {
                 if(news.getUserLikes().contains(userService.getCurrentUser())) {
@@ -165,6 +172,8 @@ public class NewsController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         model.addAttribute("newsList",newsList);
+        model.addAttribute("user", user);
+        model.addAttribute("value", value);
         return "showAllNews";
     }
 
@@ -178,15 +187,44 @@ public class NewsController {
                                             @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
                                             @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
                                             @RequestParam("keyword") String keyword, Model model) {
-        int pageSize = 10;
+        int pageSize=20;
         Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo, pageSize, sortField, sortDir, keyword);
         List<NewsEntity> newsList = page.getContent();
+        User user = userService.getCurrentUser();
+        int value = 3;
+        if(userService.getCurrentUser() != null) {
+            for (NewsEntity news : newsList) {
+                if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                    news.setLikeByUser(true);
+                }
+                else {
+                    news.setLikeByUser(false);
+                }
+                if(news.getHiddenNews().contains(userService.getCurrentUser())) {
+                    news.setHidden(true);
+                }
+                else {
+                    news.setHidden(false);
+                }
+                if(news.getFavoriteNews().contains(userService.getCurrentUser())) {
+                    news.setFavorite(true);
+                }
+                else {
+                    news.setFavorite(false);
+                }
+            }
+        }
+        for (NewsEntity news : newsList) {
+            news.setPointsPerPost(news.getUserLikes().size());
+        }
+        model.addAttribute("user", user);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("keyword", keyword);
         model.addAttribute("newsList", newsList);
+        model.addAttribute("value", value);
         return "pastNews";
     }
 
@@ -195,25 +233,64 @@ public class NewsController {
                                          @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
                                          @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir,
                                          @RequestParam("keyword") String keyword, Model model) {
-        int pageSize=10;
+        int pageSize=20;
         Page<NewsEntity> page = newsService.getPostsWithPagination(pageNo,pageSize,sortField,sortDir,keyword);
         List<NewsEntity> newsList = page.getContent();
+        User user = userService.getCurrentUser();
+        int value = 2;
+        if(userService.getCurrentUser() != null) {
+            for (NewsEntity news : newsList) {
+                if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                    news.setLikeByUser(true);
+                }
+                else {
+                    news.setLikeByUser(false);
+                }
+                if(news.getHiddenNews().contains(userService.getCurrentUser())) {
+                    news.setHidden(true);
+                }
+                else {
+                    news.setHidden(false);
+                }
+                if(news.getFavoriteNews().contains(userService.getCurrentUser())) {
+                    news.setFavorite(true);
+                }
+                else {
+                    news.setFavorite(false);
+                }
+            }
+        }
+        for (NewsEntity news : newsList) {
+            news.setPointsPerPost(news.getUserLikes().size());
+        }
+        model.addAttribute("user", user);
         model.addAttribute("currentPage",pageNo);
         model.addAttribute("totalPages",page.getTotalPages());
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("keyword", keyword);
         model.addAttribute("newsList",newsList);
+        model.addAttribute("value", value);
         return "newNews";
     }
 
-    @RequestMapping("/addLike/{newsId}")
-    public String addLikeOnNews(@PathVariable(value = "newsId") Long newsId) {
+    @RequestMapping("/addLike/{newsId}/{value}")
+    public String addLikeOnNews(@PathVariable(value = "newsId") Long newsId,
+                                @PathVariable(value = "value") Integer value) {
         NewsEntity newsEntity = newsService.get(newsId);
         List<User> userLikes = newsEntity.getUserLikes();
         userLikes.add(userService.getCurrentUser());
         newsService.saveNews(newsEntity);
-        return "redirect:/";
+        if (value == 1) {
+            return "redirect:/";
+        }
+        else if(value == 2){
+            return "redirect:/newNews/1?sortField=id&sortDirection=desc&keyword=";
+        }
+        else if(value == 3){
+            return "redirect:/pastNews/1?sortField=id&sortDirection=asc&keyword=";
+        }
+        return "";
     }
 
     @RequestMapping("/removeLike/{newsId}")
@@ -257,6 +334,7 @@ public class NewsController {
     public String userNews(Model model) {
         List<NewsEntity> newsList = newsService.getNews();
         User user = userService.getCurrentUser();
+        int value = 4;
         if(userService.getCurrentUser() != null) {
             for (NewsEntity news : newsList) {
                 if(news.getUserLikes().contains(userService.getCurrentUser())) {
@@ -284,6 +362,7 @@ public class NewsController {
         }
         model.addAttribute("newsList", newsList);
         model.addAttribute("user", user);
+        model.addAttribute("value", value);
         return "userNews";
     }
 
@@ -360,6 +439,15 @@ public class NewsController {
         hideNews.add(userService.getCurrentUser());
         newsService.saveNews(newsEntity);
         return "redirect:/";
+    }
+
+    @RequestMapping("/hideNewsFromNew/{newsId}")
+    public String hideNewsFromNew(@PathVariable(value = "newsId") Long newsId) {
+        NewsEntity newsEntity = newsService.get(newsId);
+        List<User> hideNews = newsEntity.getHiddenNews();
+        hideNews.add(userService.getCurrentUser());
+        newsService.saveNews(newsEntity);
+        return "redirect:/newNews";
     }
 
     @RequestMapping("/removeHide/{newsId}")

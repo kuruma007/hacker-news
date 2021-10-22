@@ -18,6 +18,7 @@
             justify-content:flex-start;
         }
         .header{
+            margin-top:30px;
             display:flex;
             width:90%;
             align-self:center;
@@ -33,6 +34,7 @@
         width:90%;
         align-self:center;
         background-color: rgb(240,240,240);
+        border-bottom:1px solid orange;
         }
      tr:nth-child(even) {
   background-color: #dddddd;
@@ -41,7 +43,37 @@
 text-decoration:none;
             color:black;
 }
+#userProfile{
+margin-left: 350px;
+}
+form{
+width:10%;
+}
 
+#ab{
+display:flex;
+flex-direction:row;
+}
+
+body {
+min-height:100vh;
+}
+#cd {
+    display:flex;
+    flex-direction:row;
+    align-self: center;
+    width: 100%;
+    justify-content:center;
+    bottom:20px;
+    left:0px;
+}
+.btn-search{
+    margin-left: 5px;
+}
+.news{
+    text-decoration:none;
+    color:black;
+}
    </style>
 </head>
 <body>
@@ -62,7 +94,7 @@ text-decoration:none;
             <a href="#news">Jobs</a>&nbsp;|
             <a th:href="@{/createNewNews}">Submit</a>&nbsp;
             <th:block th:if="${admin} OR ${sessionUser} != null">
-                <a th:href="@{/userProfile}">[[${user.name}]]</a>
+                <a th:id="userProfile" th:href="@{/userProfile}">[[${user.name}]]</a>
             </th:block>&nbsp;
         </div>
         <div align="right">
@@ -78,7 +110,7 @@ text-decoration:none;
     <table class="table">
         <tr th:each="news : ${newsList}" th:if="${news.content} == null and !${news.Hidden}">
             <td th:if="!${news.likeByUser}" style="width:10%">
-                <form th:action="@{/addLike/{newsId}(newsId=${news.id})}" method="post">
+                <form th:action="@{/addLike/{newsId}/{value}(newsId=${news.id},value=${value})}" method="post">
                     <button>Like</button>
                     [[${news.pointsPerPost}]]
                 </form>
@@ -89,8 +121,9 @@ text-decoration:none;
                     [[${news.pointsPerPost}]]
                 </form>
             </td>
-            <td><h5><a th:href="${news.url}">[[${news.title}]]</a></h5>
+            <td><h5><a class="news" th:href="${news.url}">[[${news.title}]]</a></h5>
                 <h6 th:text="${news.createdAt}"></h6>
+                <div id="ab">
                 <th:block th:if="!${news.Hidden}">
                     <form th:action="@{/hideNews/{newsId}(newsId=${news.id})}" method="post">
                         <button>Hide</button>
@@ -101,12 +134,14 @@ text-decoration:none;
                         <button>Favorite</button>
                     </form>
                 </th:block>
+
                 <th:block th:if="${news.Favorite}">
                     <form th:action="@{/removeFavorite/{newsId}(newsId=${news.id})}" method="post">
                         <button>Un-Favorite</button>
                     </form>
                 </th:block>
                 <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
+                </div>
             </td>
         </tr>
         <tr>
@@ -115,13 +150,15 @@ text-decoration:none;
                                  + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
         </tr>
     </table>
-
-    <form th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}">
-        <input type="hidden" name="sortField" th:value="${sortField}">
-        <input type="hidden" name="sortDir" th:value="${sortDir}">
-        <input type="text" name="keyword" th:value="${keyword}">
-        <button type="submit">Search</button>
-    </form>
 </div>
+<br>
+<form id="cd" th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}">
+    <input type="hidden" name="sortField" th:value="${sortField}" class="form-input">
+    <input type="hidden" name="sortDir" th:value="${sortDir}" class="form-input">
+    <input type="text" name="keyword" th:value="${keyword}" class="form-input">
+    <button type="submit" class="btn-search">Search</button>
+</form>
+<br>
+<br>
 </body>
 </html>
