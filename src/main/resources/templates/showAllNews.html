@@ -62,7 +62,7 @@ text-decoration:none;
             <a href="#news">Jobs</a>&nbsp;|
             <a th:href="@{/createNewNews}">Submit</a>&nbsp;
             <th:block th:if="${admin} OR ${sessionUser} != null">
-                <a th:href="@{/userProfile}">[[${user.name}]]</a>
+                | <a th:href="@{/userProfile}">[[${user.name}]]</a>
             </th:block>&nbsp;
         </div>
         <div align="right">

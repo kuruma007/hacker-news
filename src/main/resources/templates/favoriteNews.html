@@ -7,7 +7,7 @@
     <title>Title</title>
 </head>
 <body>
-<table>
+<table align="center">
     <tr th:each="news : ${newsList}" th:if="${news.Favorite}">
         <td th:if="!${news.likeByUser}" style="width:10%">
             <form th:action="@{/addLike/{newsId}(newsId=${news.id})}" method="post">
