@@ -18,7 +18,7 @@ deploy_heroku:
   stage: deploy
   environment: heroku
   only:
-    - master
+    - main
   script:
     - echo "Deploying for Heroku Cloud Platform"
     - echo "$HEROKU_API_KEY"
