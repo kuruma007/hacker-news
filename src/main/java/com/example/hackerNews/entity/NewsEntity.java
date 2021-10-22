@@ -20,12 +20,26 @@ public class NewsEntity {
     private Boolean hide;
     private Boolean likeByUser;
     private Integer pointsPerPost;
+    private Boolean isHidden;
+    private Boolean isFavorite;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name="user_like",
             joinColumns = @JoinColumn(name = "news_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> userLikes = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(name="user_hide",
+            joinColumns = @JoinColumn(name = "news_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> hiddenNews = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(name="user_favorite",
+            joinColumns = @JoinColumn(name = "news_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> favoriteNews = new ArrayList<>();
 
     public Boolean getHide() {
         return hide;
@@ -38,7 +52,7 @@ public class NewsEntity {
     public NewsEntity() {
     }
 
-    public NewsEntity(Long id, String title, String name, String url, String content, String createdAt, Boolean hide, Boolean likeByUser, Integer pointsPerPost, List<User> userLikes) {
+    public NewsEntity(Long id, String title, String name, String url, String content, String createdAt, Boolean hide, Boolean likeByUser, Integer pointsPerPost, Boolean isHidden, Boolean isFavorite, List<User> userLikes, List<User> hiddenNews, List<User> favoriteNews) {
         this.id = id;
         this.title = title;
         this.name = name;
@@ -48,7 +62,11 @@ public class NewsEntity {
         this.hide = hide;
         this.likeByUser = likeByUser;
         this.pointsPerPost = pointsPerPost;
+        this.isHidden = isHidden;
+        this.isFavorite = isFavorite;
         this.userLikes = userLikes;
+        this.hiddenNews = hiddenNews;
+        this.favoriteNews = favoriteNews;
     }
 
     public Long getId() {
@@ -121,5 +139,37 @@ public class NewsEntity {
 
     public void setPointsPerPost(Integer pointsPerPost) {
         this.pointsPerPost = pointsPerPost;
+    }
+
+    public List<User> getHiddenNews() {
+        return hiddenNews;
+    }
+
+    public void setHiddenNews(List<User> hiddenNews) {
+        this.hiddenNews = hiddenNews;
+    }
+
+    public List<User> getFavoriteNews() {
+        return favoriteNews;
+    }
+
+    public void setFavoriteNews(List<User> favoriteNews) {
+        this.favoriteNews = favoriteNews;
+    }
+
+    public Boolean getHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        isHidden = hidden;
+    }
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
     }
 }

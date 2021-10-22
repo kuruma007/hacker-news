@@ -21,6 +21,7 @@ import java.util.List;
 public class NewsController {
     @Autowired
     private NewsService newsService;
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -220,6 +221,170 @@ public class NewsController {
         NewsEntity newsEntity = newsService.get(newsId);
         List<User> userLikes = newsEntity.getUserLikes();
         userLikes.remove(userService.getCurrentUser());
+        newsService.saveNews(newsEntity);
+        return "redirect:/";
+    }
+
+    @GetMapping("/userProfile")
+    public String userProfile(Model model) {
+        User user = userService.getCurrentUser();
+        List<NewsEntity> newsList = newsService.getNews();
+        List<Comment> commentList = commentService.getAll();
+        Long newsLike = 0L;
+        Long newsPosted = 0L;
+        Long comments = 0L;
+        for (Comment comment : commentList) {
+            if(comment.getName().equalsIgnoreCase(user.getName())) {
+                comments+=1;
+            }
+        }
+        for (NewsEntity news : newsList) {
+            if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                newsLike+=1;
+            }
+            if(news.getName().equalsIgnoreCase(user.getName())) {
+                newsPosted+=1;
+            }
+        }
+        model.addAttribute("user", user);
+        model.addAttribute("newsLike", newsLike);
+        model.addAttribute("newsPosted", newsPosted);
+        model.addAttribute("comments", comments);
+        return "userProfile";
+    }
+
+    @GetMapping("/userNews")
+    public String userNews(Model model) {
+        List<NewsEntity> newsList = newsService.getNews();
+        User user = userService.getCurrentUser();
+        if(userService.getCurrentUser() != null) {
+            for (NewsEntity news : newsList) {
+                if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                    news.setLikeByUser(true);
+                }
+                else {
+                    news.setLikeByUser(false);
+                }
+                if(news.getHiddenNews().contains(userService.getCurrentUser())) {
+                    news.setHidden(true);
+                }
+                else {
+                    news.setHidden(false);
+                }
+                if(news.getFavoriteNews().contains(userService.getCurrentUser())) {
+                    news.setFavorite(true);
+                }
+                else {
+                    news.setFavorite(false);
+                }
+            }
+        }
+        for (NewsEntity news : newsList) {
+            news.setPointsPerPost(news.getUserLikes().size());
+        }
+        model.addAttribute("newsList", newsList);
+        model.addAttribute("user", user);
+        return "userNews";
+    }
+
+    @GetMapping("/hiddenNews")
+    public String hiddenNews(Model model) {
+        List<NewsEntity> newsList = newsService.getNews();
+        User user = userService.getCurrentUser();
+        if(userService.getCurrentUser() != null) {
+            for (NewsEntity news : newsList) {
+                if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                    news.setLikeByUser(true);
+                }
+                else {
+                    news.setLikeByUser(false);
+                }
+                if(news.getHiddenNews().contains(userService.getCurrentUser())) {
+                    news.setHidden(true);
+                }
+                else {
+                    news.setHidden(false);
+                }
+                if(news.getFavoriteNews().contains(userService.getCurrentUser())) {
+                    news.setFavorite(true);
+                }
+                else {
+                    news.setFavorite(false);
+                }
+            }
+        }
+        for (NewsEntity news : newsList) {
+            news.setPointsPerPost(news.getUserLikes().size());
+        }
+        model.addAttribute("newsList", newsList);
+        return "hiddenNews";
+    }
+
+    @GetMapping("/favoriteNews")
+    public String favoriteNews(Model model) {
+        List<NewsEntity> newsList = newsService.getNews();
+        User user = userService.getCurrentUser();
+        if(userService.getCurrentUser() != null) {
+            for (NewsEntity news : newsList) {
+                if(news.getUserLikes().contains(userService.getCurrentUser())) {
+                    news.setLikeByUser(true);
+                }
+                else {
+                    news.setLikeByUser(false);
+                }
+                if(news.getHiddenNews().contains(userService.getCurrentUser())) {
+                    news.setHidden(true);
+                }
+                else {
+                    news.setHidden(false);
+                }
+                if(news.getFavoriteNews().contains(userService.getCurrentUser())) {
+                    news.setFavorite(true);
+                }
+                else {
+                    news.setFavorite(false);
+                }
+            }
+        }
+        for (NewsEntity news : newsList) {
+            news.setPointsPerPost(news.getUserLikes().size());
+        }
+        model.addAttribute("newsList", newsList);
+        return "favoriteNews";
+    }
+
+    @RequestMapping("/hideNews/{newsId}")
+    public String hideNews(@PathVariable(value = "newsId") Long newsId) {
+        NewsEntity newsEntity = newsService.get(newsId);
+        List<User> hideNews = newsEntity.getHiddenNews();
+        hideNews.add(userService.getCurrentUser());
+        newsService.saveNews(newsEntity);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/removeHide/{newsId}")
+    public String unHideNews(@PathVariable(value = "newsId") Long newsId) {
+        NewsEntity newsEntity = newsService.get(newsId);
+        List<User> hideNews = newsEntity.getHiddenNews();
+        hideNews.remove(userService.getCurrentUser());
+        newsService.saveNews(newsEntity);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/favoriteNews/{newsId}")
+    public String favoriteNews(@PathVariable(value = "newsId") Long newsId) {
+        NewsEntity newsEntity = newsService.get(newsId);
+        List<User> favoriteNews = newsEntity.getFavoriteNews();
+        favoriteNews.add(userService.getCurrentUser());
+        newsService.saveNews(newsEntity);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/removeFavorite/{newsId}")
+    public String removeFavorite(@PathVariable(value = "newsId") Long newsId) {
+        NewsEntity newsEntity = newsService.get(newsId);
+        List<User> favoriteNews = newsEntity.getFavoriteNews();
+        favoriteNews.remove(userService.getCurrentUser());
         newsService.saveNews(newsEntity);
         return "redirect:/";
     }

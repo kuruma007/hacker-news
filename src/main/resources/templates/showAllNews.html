@@ -5,90 +5,107 @@
 <head>
     <meta charset="UTF-8">
     <title>Show All News</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style th:inline="css">
+    *{
+    margin:0;
+    padding:0;
+    display:border-box;
+    }
+        .main{
+            display:flex;
+            flex-direction:column;
+            justify-content:flex-start;
+        }
+        .header{
+            display:flex;
+            width:90%;
+            align-self:center;
+            justify-content:space-between;
+            background-color: 	rgb(255,69,0);
+
+        }
+        .insideheader > a{
+        text-decoration:none;
+            color:black;
+        }
+        .table{
+        width:90%;
+        align-self:center;
+        background-color: rgb(240,240,240);
+        }
+     tr:nth-child(even) {
+  background-color: #dddddd;
+      }
+.login{
+text-decoration:none;
+            color:black;
+}
+
+   </style>
 </head>
 <body>
-<div th:unless="${ADMIN} OR ${sessionUser} != null">
-    <form th:action="@{/login}">
-        <button name="Login" type="submit">Login</button>
+<div class="main">
+    <div class="header">
+        <div class="insideheader">
+            <a th:href="@{/}"><b>Hacker News</b></a>&nbsp;&nbsp;&nbsp;
+            <th:block th:if="${admin} OR ${sessionUser} != null">
+                <a th:href="@{/welcome}">Welcome</a>|
+            </th:block>
+            <a th:href="@{'/newNews/' + ${currentPage}+ '?sortField=id&sortDirection=desc' + '&keyword='
+                    + ${keyword}}">New</a>|&nbsp;
+            <a th:href="@{'/pastNews/' + ${currentPage}+ '?sortField=id&sortDirection=asc' + '&keyword='
+                    + ${keyword}}">Past</a>|&nbsp;
+            <a href="#news">Comments</a>|&nbsp;
+            <a href="#contact">Ask</a>&nbsp;|
+            <a href="#about">Show</a>&nbsp;|
+            <a href="#news">Jobs</a>&nbsp;|
+            <a th:href="@{/createNewNews}">Submit</a>&nbsp;
+        </div>
+        <div align="right">
+            <th:block th:if="${admin} OR ${sessionUser} != null">
+                <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Logout</a>
+            </th:block>
+        </div>
+        <div th:unless="${ADMIN} OR ${sessionUser} != null">
+            <a class="login" th:href="@{/login}">Login</a>
+        </div>
+    </div>
+    <br>
+    <table class="table">
+        <tr th:each="news : ${newsList}" th:if="${news.content} == null">
+            <td th:if="!${news.likeByUser}">
+                <form th:action="@{/addLike/{newsId}(newsId=${news.id})}" method="post">
+                    <button>Like</button>
+                    [[${news.pointsPerPost}]]
+                </form>
+            </td>
+            <td th:if="${news.likeByUser}">
+                <form th:action="@{/removeLike/{newsId}(newsId=${news.id})}" method="post">
+                    <button>Unlike</button>
+                    [[${news.pointsPerPost}]]
+                </form>
+            </td>
+            <td><p><a th:href="${news.url}">[[${news.title}]]</a></p>
+                <p th:text="${news.createdAt}"></p>
+                <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
+                <a th:href="@{'/deleteNews/' + ${news.id}}">Delete</a>
+                <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
+            </td>
+        </tr>
+        <tr>
+            <td><a th:if="${currentPage < totalPages}"
+                   th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField}
+                                 + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
+        </tr>
+    </table>
+
+    <form th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}">
+        <input type="hidden" name="sortField" th:value="${sortField}">
+        <input type="hidden" name="sortDir" th:value="${sortDir}">
+        <input type="text" name="keyword" th:value="${keyword}">
+        <button type="submit">Search</button>
     </form>
 </div>
-<div align="right">
-    <th:block th:if="${admin} OR ${sessionUser} != null">
-        <form th:action="@{/logout}">
-            <button name="Login" sec:authorize="isAuthenticated()" type="submit">Logout</button>
-        </form>
-    </th:block>
-</div>
-<table align="center" width=50%; height=60px; style="border:1px black solid;">
-    <tr>
-        <td colspan="5">
-            <div>
-                <a th:href="@{/}"><b>Hacker News</b></a>&nbsp;
-                <th:block th:if="${admin} OR ${sessionUser} != null">
-                    <a th:href="@{/welcome}">Welcome</a>&nbsp;
-                </th:block>
-                <a th:href="@{'/newNews/' + ${currentPage}+ '?sortField=id&sortDirection=desc' + '&keyword='
-                    + ${keyword}}">New</a>&nbsp;
-                <a th:href="@{'/pastNews/' + ${currentPage}+ '?sortField=id&sortDirection=asc' + '&keyword='
-                    + ${keyword}}">Past</a>&nbsp;
-                <a href="#news">Comments</a>&nbsp;
-                <a href="#contact">Ask</a>&nbsp;
-                <a href="#about">Show</a>&nbsp;
-                <a href="#news">Jobs</a>&nbsp;
-                <a th:href="@{/createNewNews}">Submit</a>&nbsp;
-                <th:block th:if="${admin} OR ${sessionUser} != null">
-                <a th:href="@{/userProfile}">[[${user.name}]]</a>
-                </th:block>&nbsp;
-            </div>
-        </td>
-    </tr>
-    <tr th:each="news : ${newsList}" th:if="${news.content} == null and !${news.Hidden}">
-        <td th:if="!${news.likeByUser}" style="width:10%">
-            <form th:action="@{/addLike/{newsId}(newsId=${news.id})}" method="post">
-                <button>Like</button>
-                [[${news.pointsPerPost}]]
-            </form>
-        </td>
-        <td th:if="${news.likeByUser}">
-            <form th:action="@{/removeLike/{newsId}(newsId=${news.id})}" method="post">
-                <button>Unlike</button>
-                [[${news.pointsPerPost}]]
-            </form>
-        </td>
-        <td><h5><a th:href="${news.url}">[[${news.title}]]</a></h5>
-            <h6 th:text="${news.createdAt}"></h6>
-            <th:block th:if="!${news.Hidden}">
-            <form th:action="@{/hideNews/{newsId}(newsId=${news.id})}" method="post">
-                <button>Hide</button>
-            </form>
-            </th:block>
-            <th:block  th:if="!${news.Favorite}">
-            <form th:action="@{/favoriteNews/{newsId}(newsId=${news.id})}" method="post">
-                <button>Favorite</button>
-            </form>
-            </th:block>
-            <th:block th:if="${news.Favorite}">
-            <form th:action="@{/removeFavorite/{newsId}(newsId=${news.id})}" method="post">
-                <button>Un-Favorite</button>
-            </form>
-            </th:block>
-            <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
-        </td>
-    </tr>
-    <tr>
-        <td><a th:if="${currentPage < totalPages}"
-               th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
-    </tr>
-    <tr>
-        <td colspan="4" align="center">
-            <form th:action="'/page/' + ${currentPage} + '?sortField=publishedAt&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}">
-                <input type="hidden" name="sortField" th:value="${sortField}">
-                <input type="hidden" name="sortDir" th:value="${sortDir}">
-                <input type="text" name="keyword" th:value="${keyword}">
-                <button type="submit">Search</button>
-            </form>
-        </td>
-    </tr>
-</table>
 </body>
 </html>
