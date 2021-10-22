@@ -1,7 +1,9 @@
 package com.example.hackerNews.controller;
 
+import com.example.hackerNews.entity.Comment;
 import com.example.hackerNews.entity.NewsEntity;
 import com.example.hackerNews.entity.User;
+import com.example.hackerNews.service.CommentService;
 import com.example.hackerNews.service.NewsService;
 import com.example.hackerNews.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
 import java.util.List;
 
 @Controller
@@ -22,6 +23,8 @@ public class NewsController {
     private NewsService newsService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommentService commentService;
 
     @ModelAttribute
     public void modelAttribute(Model model){
@@ -34,6 +37,7 @@ public class NewsController {
     public String showNewPostForm(Model model) {
         Page<NewsEntity> page = newsService.getPostsWithPagination(1,10,"id","asc","");
         List<NewsEntity> newsList = page.getContent();
+        User user = userService.getCurrentUser();
         if(userService.getCurrentUser() != null) {
             for (NewsEntity news : newsList) {
                 if(news.getUserLikes().contains(userService.getCurrentUser())) {
@@ -42,12 +46,25 @@ public class NewsController {
                 else {
                     news.setLikeByUser(false);
                 }
+                if(news.getHiddenNews().contains(userService.getCurrentUser())) {
+                    news.setHidden(true);
+                }
+                else {
+                    news.setHidden(false);
+                }
+                if(news.getFavoriteNews().contains(userService.getCurrentUser())) {
+                    news.setFavorite(true);
+                }
+                else {
+                    news.setFavorite(false);
+                }
             }
         }
         for (NewsEntity news : newsList) {
             news.setPointsPerPost(news.getUserLikes().size());
         }
         model.addAttribute("currentPage",1);
+        model.addAttribute("user", user);
         model.addAttribute("sortField", "id");
         model.addAttribute("sortDir", "asc");
         model.addAttribute("totalPages",page.getTotalPages());
@@ -78,6 +95,8 @@ public class NewsController {
         User user = userService.getCurrentUser();
         newsEntity.setName(user.getName());
         newsEntity.setLikeByUser(false);
+        newsEntity.setFavorite(false);
+        newsEntity.setHidden(false);
         newsService.saveNews(newsEntity);
         return "redirect:/";
     }
@@ -120,6 +139,18 @@ public class NewsController {
                 }
                 else {
                     news.setLikeByUser(false);
+                }
+                if(news.getHiddenNews().contains(userService.getCurrentUser())) {
+                    news.setHidden(true);
+                }
+                else {
+                    news.setHidden(false);
+                }
+                if(news.getFavoriteNews().contains(userService.getCurrentUser())) {
+                    news.setFavorite(true);
+                }
+                else {
+                    news.setFavorite(false);
                 }
             }
         }
