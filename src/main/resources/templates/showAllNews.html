@@ -36,10 +36,13 @@
                 <a href="#about">Show</a>&nbsp;
                 <a href="#news">Jobs</a>&nbsp;
                 <a th:href="@{/createNewNews}">Submit</a>&nbsp;
+                <th:block th:if="${admin} OR ${sessionUser} != null">
+                <a th:href="@{/userProfile}">[[${user.name}]]</a>
+                </th:block>&nbsp;
             </div>
         </td>
     </tr>
-    <tr th:each="news : ${newsList}" th:if="${news.content} == null">
+    <tr th:each="news : ${newsList}" th:if="${news.content} == null and !${news.Hidden}">
         <td th:if="!${news.likeByUser}" style="width:10%">
             <form th:action="@{/addLike/{newsId}(newsId=${news.id})}" method="post">
                 <button>Like</button>
@@ -54,8 +57,21 @@
         </td>
         <td><h5><a th:href="${news.url}">[[${news.title}]]</a></h5>
             <h6 th:text="${news.createdAt}"></h6>
-            <a th:href="@{'/editNews/' + ${news.id}}">Edit</a>
-            <a th:href="@{'/deleteNews/' + ${news.id}}">Delete</a>
+            <th:block th:if="!${news.Hidden}">
+            <form th:action="@{/hideNews/{newsId}(newsId=${news.id})}" method="post">
+                <button>Hide</button>
+            </form>
+            </th:block>
+            <th:block  th:if="!${news.Favorite}">
+            <form th:action="@{/favoriteNews/{newsId}(newsId=${news.id})}" method="post">
+                <button>Favorite</button>
+            </form>
+            </th:block>
+            <th:block th:if="${news.Favorite}">
+            <form th:action="@{/removeFavorite/{newsId}(newsId=${news.id})}" method="post">
+                <button>Un-Favorite</button>
+            </form>
+            </th:block>
             <a th:href="@{'/newsOpen/'+${news.id}}">Comments</a>
         </td>
     </tr>
