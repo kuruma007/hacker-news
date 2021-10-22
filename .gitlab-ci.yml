@@ -27,6 +27,7 @@ deploy_heroku:
     - git config --global user.email "tarun.rawat.17.1@mountblue.tech"
     - git config --global user.name "TArunRawat"
     - git config --global push.default matching
-    - git checkout main
+    - git checkout master
     - git commit --allow-empty -m "Heroku build trigger notification"
-    - git push -f heroku HEAD:main
+    - git push -f heroku HEAD:master
+    -
