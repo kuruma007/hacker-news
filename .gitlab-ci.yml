@@ -1,7 +1,7 @@
 heroku:
   stage: deploy
   only:
-    - master
+    - main
   script:
     - git config --global user.email "ankit.srivastava.17.1@mountblue.tech"
     - git config --global user.name "Ankit15708"
